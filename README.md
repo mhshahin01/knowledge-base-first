@@ -32,7 +32,7 @@ Notes on applied AI engineering, from first principles up to production systems.
 | Note | What it covers |
 | --- | --- |
 | [`00 prerequisites/pythons-basics/`](ai/foundation/00%20prerequisites/pythons-basics/) | Python Foundations for AI: 13 chunks from running your first script through type hints, classes, async, JSON and HTTP, Pydantic, and a first Pydantic AI application. Python 3.14, every example a runnable file. |
-| [`00 prerequisites/ai-for-product-managers/`](ai/foundation/00%20prerequisites/ai-for-product-managers/) | AI for Product Managers: the agentic-AI series consolidated for non-engineers. Eight linked parts, no code: what agents are, why they fail and what they cost, memory, RAG, integrations and MCP, trust and safety, voice, and shipping with measurement. |
+| [`00 prerequisites/ai-for-product-managers/`](ai/foundation/00%20prerequisites/ai-for-product-managers/) | AI for Product Managers: the agentic-AI series consolidated for non-engineers. Eight linked parts, no code: what agents are, why they fail and what they cost, memory, RAG, integrations and MCP, trust and safety, voice, and shipping with measurement. Two running examples carry every part: a support copilot for an online store and an exam-prep coach (IELTS essay grading, AWS certification mock tests, spoken mock speaking tests). |
 
 **Tutorials in place**
 
