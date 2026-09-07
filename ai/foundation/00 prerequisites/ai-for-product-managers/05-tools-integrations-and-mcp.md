@@ -6,7 +6,7 @@
 ## Why this matters to you as a PM
 
 An agent that can only talk is a chatbot. The moment your product does something real, looks up an
-order, issues a refund, creates a ticket, schedules an interview, it does so through *tools*, and every
+order, issues a refund, creates a ticket, books an exam slot, it does so through *tools*, and every
 tool is an integration someone has to build, secure, and maintain. This part covers what tools are, why
 integrations multiply faster than roadmaps expect, what the new industry standard (MCP) does and
 pointedly does not solve, and how to reason about build-versus-buy and vendor lock-in before the
@@ -17,7 +17,7 @@ decisions harden.
 A tool is a capability you hand the agent: a named action with a description and a list of typed inputs.
 "Look up an order by number." "Issue a refund up to this amount." "Create a support ticket." The
 support copilot for the online store needs order lookup, refund processing, and ticket creation. The
-recruiter companion needs a CV reader, a calendar, and maybe an email sender.
+exam-prep coach needs an essay reader, a question bank, and maybe an exam-booking connector.
 
 The load-bearing fact, the one to hold onto through every vendor demo: **the model only ever requests;
 your systems execute.** The agent does not reach into your order database. It produces a request that

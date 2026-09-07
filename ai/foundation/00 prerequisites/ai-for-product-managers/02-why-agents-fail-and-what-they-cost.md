@@ -33,7 +33,7 @@ This has direct product consequences:
 
 When a vendor demos an agent that "handled a complex workflow flawlessly," your first question should be: how many steps was that, and what happens on run number two hundred?
 
-The recruiter companion makes the same point from the other side. Scoring one CV against one job post is a short chain: parse, compare, judge, report. A "run the whole hiring funnel" agent, screen fifty CVs, email candidates, schedule interviews, collect feedback, update the tracker, is a long chain where each candidate multiplies the step count again. Ship the short chain first. The long chain is a roadmap item, and it may never belong in one autonomous loop at all.
+The exam-prep coach makes the same point from the other side. Scoring one essay against the band descriptors is a short chain: parse, compare, judge, report. A "run the whole prep programme" agent, diagnose the learner, build a study plan, generate drills, grade every attempt, adjust the plan, decide when to book the exam, is a long chain where each week of study multiplies the step count again. Ship the short chain first. The long chain is a roadmap item, and it may never belong in one autonomous loop at all.
 
 ## Failure mode two: the desk has a fixed size
 
@@ -58,7 +58,7 @@ Models do not read characters or words. They read **tokens**: chunks of text dra
 
 - 1 token is about 4 characters, or about three quarters of a word
 - 100 tokens is about 75 words, a solid paragraph
-- A page of text is roughly 500-700 tokens; a two-page CV is roughly 1,200-2,000 tokens
+- A page of text is roughly 500-700 tokens; a 250-word IELTS essay is roughly 350-450 tokens; a 65-question AWS mock test with answer explanations is roughly 15,000-20,000 tokens
 
 Two warnings worth remembering. First, not all text tokenizes equally: numbers, structured data, and non-English languages cost more tokens per character than plain English prose. Second, each model family has its own tokenizer, so exact counts differ slightly between providers. For forecasting, the rough conversions above are enough.
 
@@ -122,7 +122,7 @@ You do not need to implement any of these. You need to know they exist, so that 
 
 - **Fewer steps.** The master lever. It cuts cost and raises reliability at the same time, because both scale with loop rounds. Ask whether a task really needs five autonomous rounds or whether two judgment calls inside a fixed pipeline would do.
 - **Shorter instructions and a smaller tool menu.** The standing instructions and tool descriptions ride along on every single call. Bloated instructions are a per-call tax you pay forever.
-- **A cheaper model for the easy steps.** Reading an order record and reformatting it does not need the flagship model; judgment about refunds does. A realistic mixed setup, cheap model for mechanical steps and strong model for judgment, often lands 3 to 10 times cheaper than running everything on the flagship. For the recruiter companion, parsing a CV is the cheap step; evaluating it against the job post is the expensive one.
+- **A cheaper model for the easy steps.** Reading an order record and reformatting it does not need the flagship model; judgment about refunds does. A realistic mixed setup, cheap model for mechanical steps and strong model for judgment, often lands 3 to 10 times cheaper than running everything on the flagship. For the exam-prep coach, extracting the ticked answers from a submitted mock test is the cheap step; grading an essay against the band descriptors is the expensive one.
 - **Caching repeated content.** Providers bill re-sent, unchanged input at a steep discount, often around 90% off the input price, when the beginning of the request is identical to a recent one. Your standing instructions and tool menu are exactly that kind of content. This is close to free money for loop-heavy agents, but it only works if the stable content sits at the front; one changing detail placed early quietly disables the discount.
 - **Trimming conversations and tool outputs.** A tool that returns 200 rows "for completeness" bills you for 200 rows on every later round and every later turn of that conversation. Capping tool results at the source and compressing or windowing long chat histories are standard practice; Part 3 goes deeper on the conversation side.
 - **Hard budgets.** Engineers can set literal caps: maximum model calls per task, maximum tokens per run, maximum spend per conversation. When a cap is hit, the agent stops with a clean message instead of looping until the bill arrives. This is the cheapest insurance in the whole stack. If your agent has no budget cap, you do not have a cost forecast; you have a hope.

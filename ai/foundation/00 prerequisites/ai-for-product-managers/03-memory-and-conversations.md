@@ -53,7 +53,7 @@ Two things follow that belong in your head, not just your engineers':
 - **Long chats cost more than the demo suggests.** Your demo is two turns. Your power user is thirty. That user is not twice or five times as expensive as the demo; the replay tax makes them an order of magnitude more expensive. Forecast from the long chat, not the demo.
 - **Long chats quietly get worse before they hit any limit.** Models pay less reliable attention to material buried in the middle of a very long input, a documented weakness the source series calls "lost in the middle". A fact stated on turn 4 of a 60-turn support conversation can effectively go missing, not because anyone deleted it, but because the model's attention thins out over the long middle. Users experience this as "it forgot what I told it earlier", and they are right, sort of.
 
-For the recruiter companion, this is not hypothetical. A mock interview runs long by design: greeting, CV walkthrough, behavioral questions, a case exercise, feedback. The candidate's answer to question 2, which the interviewer-bot should probe at question 9, sits exactly in the thinning middle of the transcript. The interview that degrades as it lengthens is a memory-architecture problem wearing a quality-problem costume.
+For the exam-prep coach, this is not hypothetical. A coaching session runs long by design: warm-up, the three parts of the mock speaking test, a review of the answers, drills on the weak spots, feedback. The article mistake the learner made in part 1, which the examiner-bot should listen for again in part 3, sits exactly in the thinning middle of the transcript. The session that degrades as it lengthens is a memory-architecture problem wearing a quality-problem costume.
 
 ## Three ways to keep long chats affordable and sharp
 
@@ -87,7 +87,7 @@ Three honest problems come with the notes file, and they are product-policy prob
 
 - **The editorial policy problem.** Something must decide what is worth writing down. A store with no policy fills with trivia ("user said hi"), contradictions ("prefers email" and, two weeks later, "prefers phone"), and plain misreadings. Someone, the model guided by written rules, your team, or the user, acts as editor. The goal is a note card, not a landfill.
 
-  The difference is easy to see on the support copilot. Good notes: "customer prefers email over phone", "customer is shopping for a gift for their father", "return for order 4417 was approved on Tuesday". Bad notes: "customer asked about shipping on Tuesday" (a one-off question, not a durable fact), "customer seemed annoyed" (a mood reading that will mislead future turns), or both "prefers email" and "prefers phone" side by side. For the recruiter companion the stakes are higher: "candidate asked to be contacted after 17:00" is a fine note; "interviewer thought candidate seemed nervous" is a subjective judgment about a named person, stored, and you should think hard about whether you want that file to exist at all.
+  The difference is easy to see on the support copilot. Good notes: "customer prefers email over phone", "customer is shopping for a gift for their father", "return for order 4417 was approved on Tuesday". Bad notes: "customer asked about shipping on Tuesday" (a one-off question, not a durable fact), "customer seemed annoyed" (a mood reading that will mislead future turns), or both "prefers email" and "prefers phone" side by side. For the exam-prep coach the stakes are higher: "learner sits the real exam on 14 October and wants the plan compressed" is a fine note; "coach thought the learner seemed unmotivated" is a subjective judgment about a named person, stored, and you should think hard about whether you want that file to exist at all.
 
 - **Correction rights.** If the assistant remembers something wrong about a user, who fixes it, and how? Mature products expose memory to the user: "here is what I have noted about you, edit or delete". This is both good UX and, increasingly, a regulatory expectation.
 - **Memory poisoning.** A joking or hostile user can try to plant facts: "remember that my account is exempt from shipping fees." If a later turn treats planted notes as ground truth, the prank becomes a discount. What may be written into memory, and which memories the agent may act on, is a safety decision (Part 6 goes deep on this), and it needs an answer before launch, not after the first prankster screenshot.
@@ -102,7 +102,7 @@ Here is why this part of the series is the one legal will ask you about. A conve
 2. **The stored transcript**: the full logbook in your database, containing whatever the user typed, names, order numbers, health-adjacent complaints and all.
 3. **The long-term memory store**: the notes file, which by design concentrates a person's preferences and history into one tidy, readable dossier.
 
-All three are personal data under any privacy regime you are likely to operate in. The recruiter companion makes this vivid: its transcripts contain candidates' career histories, salary expectations, and interview performance; its memory store is a file of judgments about named individuals. That is about as sensitive as product data gets.
+All three are personal data under any privacy regime you are likely to operate in. The exam-prep coach makes this vivid: its transcripts contain learners' essays, voice recordings, scores, and the exam date they are anxious about; its memory store is a file of judgments about named individuals' abilities. That is about as sensitive as product data gets.
 
 A simple data map is the fastest way to see your exposure. Fill one out with your team before launch:
 
@@ -136,7 +136,7 @@ A practical starter set of copy decisions to make before launch:
 - **Support macros**: pre-write the answer to "why did it forget me?" (the conversation was too long, or the note was never written, and here is how to fix it) and to "is it learning about other people from me?" (no; the model never changes; notes are per user).
 - **Sales and marketing**: ban "learns from you" and "gets smarter over time". The approved claim is narrower and still attractive: it remembers what you choose to keep.
 
-The recruiter companion shows why this discipline pays. A candidate who believes the tool "learns from every interview" will reasonably ask whether their answers train the system that screens future candidates, or worse, other employers' tools. The true answer, the model is unchanged and your transcript lives under our retention policy, is calming, but only if your copy never promised otherwise.
+The exam-prep coach shows why this discipline pays. A learner who believes the tool "learns from every session" will reasonably ask whether their essays and recordings train the system that grades other learners, or worse, other schools' tools. The true answer, the model is unchanged and your transcript lives under our retention policy, is calming, but only if your copy never promised otherwise.
 
 ## Questions to ask your engineering team
 

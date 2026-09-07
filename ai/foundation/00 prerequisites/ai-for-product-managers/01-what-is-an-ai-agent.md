@@ -31,7 +31,7 @@ Take a task any marketplace PM knows: **a customer writes in asking for a refund
 
 A real-life picture: a chatbot is a vending machine (one button, one result). A workflow is an assembly line (fixed stations, every item takes the same route). An agent is a new employee you handed a goal and a set of keys: capable, flexible, and in need of supervision, a budget, and clear rules about which doors they may open.
 
-The same three levels apply to the recruiter companion. Screening a CV against a job post can be one model call ("does this CV meet the stated requirements, yes or no, with reasons"). Scheduling an interview is a workflow (check calendars, propose slots, send the invite, every time the same way). Running a mock interview is the agentic case: the next question genuinely depends on the answer the candidate just gave, and no script written in advance can cover that.
+The same three levels apply to the exam-prep coach. Grading one IELTS practice essay against the band descriptors can be one model call ("score this essay on the four criteria, with the descriptor line that justifies each score"). Building an AWS certification mock test is a workflow (read the exam guide's domain weights, draw questions per domain from the bank, assemble the paper, score the answers, every time the same way). Running a mock speaking test is the agentic case: the examiner's next question genuinely depends on the answer the learner just gave, and no script written in advance can cover that.
 
 ### Why the levels differ in practice
 
@@ -88,7 +88,7 @@ Building an agent is like staffing a small office. You need someone who thinks, 
 | Memory | Desk and filing cabinet | The growing case file plus external stores | Stuffing everything into the case file |
 | Orchestration | The office manager | Ordinary code: loop, budgets, errors, guardrails | Skipping budgets and exits because "the demo worked" |
 
-Mapped onto the recruiter companion, the office looks like this. The model reads each CV and the job post and decides what to do next. Its tools are: fetch a CV, search past interview notes, compare against the stated requirements, draft feedback for the hiring manager. Its desk holds the current candidate's file; its filing cabinet holds every past evaluation it can search. Its office manager enforces the rules that matter in hiring: no rejection email ever sends without a human reading it first, and every run stops at a fixed budget whether or not it finished.
+Mapped onto the exam-prep coach, the office looks like this. The model reads each submitted essay and the band descriptors and decides what to do next. Its tools are: fetch the essay, search the learner's past attempts, compare against the descriptors, draft feedback for the learner. Its desk holds the current attempt; its filing cabinet holds every past attempt it can search. Its office manager enforces the rules that matter in exam preparation: no "you are ready, book the real exam" verdict ever goes out without a tutor reading it first, and every run stops at a fixed budget whether or not it finished.
 
 A scoping question worth asking early: which of the four blocks is the team's effort going into? In healthy projects the honest answer is orchestration and tool descriptions, because the model is rented and the memory is standard plumbing. If most of the effort is going anywhere else, ask why.
 
@@ -110,13 +110,13 @@ You can see all five in tools your engineers may already use. Popular coding ass
 
 The same five patterns, mapped to the two running examples:
 
-| Pattern | Support copilot | Recruiter companion |
+| Pattern | Support copilot | Exam-prep coach |
 |---|---|---|
-| Thinking out loud | Writes "I need the order date before I can judge the policy" before each lookup | Writes "the candidate's answer was vague on leadership, I should probe" before each question |
-| Plan-then-execute | Plans the refund investigation up front, then works through it | Plans the mock interview arc (background, technical depth, scenario) before starting |
-| Self-review | Re-checks the drafted reply against the policy text before sending | Re-checks the CV evaluation against every stated requirement before reporting |
-| Teams of specialists | A triage agent hands billing cases to a billing specialist | A screening agent hands finalists to an interview agent with a fresh case file |
-| Human approval | Refunds above a threshold pause for a person | Rejection and offer communications pause for a person |
+| Thinking out loud | Writes "I need the order date before I can judge the policy" before each lookup | Writes "the learner answered in short simple sentences, I should ask for a comparison" before each question |
+| Plan-then-execute | Plans the refund investigation up front, then works through it | Plans the speaking-test arc (warm-up, long turn, discussion) before starting |
+| Self-review | Re-checks the drafted reply against the policy text before sending | Re-checks the essay score against every band descriptor before reporting |
+| Teams of specialists | A triage agent hands billing cases to a billing specialist | A grading agent hands the weak-area list to a drill agent with a fresh case file |
+| Human approval | Refunds above a threshold pause for a person | Readiness verdicts and paid exam bookings pause for a person |
 
 ## The golden rule: use the simplest thing that works
 
@@ -132,7 +132,7 @@ One criterion, worth memorizing: **an agent is justified only when the next step
 
 - "Research this company and write a report." You cannot know in advance how many searches are needed, which sources matter, or when there is enough material. Justified.
 - A support copilot that diagnoses a failed integration. Each diagnostic check determines which check makes sense next; the decision tree is too large and too fluid to hardcode. Justified.
-- A mock interview where the follow-up question depends on the candidate's last answer. Justified.
+- A mock speaking test where the follow-up question depends on the learner's last answer. Justified.
 - Extracting the total from an invoice and validating it. The path is identical every time. Not justified; that is a workflow, and building it as an agent adds cost and failure modes for zero benefit.
 - Classifying a support ticket. One judgment. Not justified; that is a plain model call.
 
@@ -172,7 +172,7 @@ The deciding factors, in order: how many paths exist (one or a few means a call 
 ## PM self-check
 
 - Your team proposes an "agent" that always runs the same five steps on every support ticket. Is it an agent? (No: the path is fixed, so it is a workflow; that may be the right design, but scope and price it as one.)
-- A mock-interview feature must decide its next question based on the candidate's previous answer. Call, workflow, or agent? (Agent: the next step genuinely depends on unforeseeable results.)
+- A mock speaking-test feature must decide its next question based on the learner's previous answer. Call, workflow, or agent? (Agent: the next step genuinely depends on unforeseeable results.)
 - Your refund agent sometimes loops for forty rounds and racks up a large bill. Which building block is missing or weak? (Orchestration: the budget cap and give-up exit were never enforced.)
 
 ## Going deeper (technical track)

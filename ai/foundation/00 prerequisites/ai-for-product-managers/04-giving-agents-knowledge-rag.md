@@ -5,7 +5,7 @@
 
 ## Why this matters to you as a PM
 
-Your support copilot will be asked about your return policy, your warranty terms, and your shipping rules. Your recruiter companion will be asked about your hiring criteria and your interview process. The AI model behind both has never read any of these documents, and what it does not know, it invents, fluently. How your team gives the agent your company's knowledge is a product decision with direct consequences for cost, accuracy, update speed, and liability. That mechanism is called RAG, and this part gives you enough of it to scope features, read vendor claims, and challenge your engineers with the right questions.
+Your support copilot will be asked about your return policy, your warranty terms, and your shipping rules. Your exam-prep coach will be asked about the band descriptors, the domain weights in the current AWS exam guide, and what changed in the latest exam version. The AI model behind both has never read any of these documents, and what it does not know, it invents, fluently. How your team gives the agent your company's knowledge is a product decision with direct consequences for cost, accuracy, update speed, and liability. That mechanism is called RAG, and this part gives you enough of it to scope features, read vendor claims, and challenge your engineers with the right questions.
 
 ## The problem: the model never read your documents
 
@@ -65,7 +65,7 @@ When a RAG-powered answer is wrong, it failed in one of two independent places, 
 
 From the outside, these two failures look identical: a confident wrong answer. That is why teams get stuck blaming "the model" for weeks when the actual fault is a chunking choice, or rebuilding the search index when the actual fault is a missing sentence in the instructions. The measurement section below exists precisely to keep these apart.
 
-A recruiter-companion version: the companion rates a CV poorly because "the candidate lacks Kubernetes experience" when the job post asks for "container orchestration". If the job post passage was never fetched, that is a retrieval miss. If it was fetched and the model applied its own generic idea of what senior engineers need, that is a grounding failure. Same symptom, different fix, different owner.
+An exam-prep-coach version: the coach docks an essay for "no counter-argument" when the task type ("to what extent do you agree") does not require one under the descriptors. If the descriptor passage was never fetched, that is a retrieval miss. If it was fetched and the model applied its own generic idea of what a good essay looks like, that is a grounding failure. Same symptom, different fix, different owner.
 
 ## Citations: the feature that makes answers checkable
 
@@ -73,7 +73,7 @@ A well-built RAG answer names its source: "Sale items can be returned within 14 
 
 Here is the uncomfortable fact: an uncited correct answer and a hallucinated one are indistinguishable from the outside. Both are fluent, plausible prose. Only the citation lets a user check for themselves, and lets you check at scale: your team can sample answers, follow the citations, and verify that the cited passage actually says what the answer claims.
 
-Citations also change user behavior and trust. A support answer that says "according to our returns policy, section 3" invites verification and survives it. A support answer that just asserts invites a support ticket when it is wrong. For the recruiter companion, a CV evaluation that cites the job-post criterion it applied is defensible to a hiring manager; one that does not is just an opinion with extra steps.
+Citations also change user behavior and trust. A support answer that says "according to our returns policy, section 3" invites verification and survives it. A support answer that just asserts invites a support ticket when it is wrong. For the exam-prep coach, an essay score that cites the descriptor line it applied is defensible to a learner who paid for the course; one that does not is just an opinion with extra steps.
 
 Citations are only possible because every chunk carried its source label through the pipeline. If your team's retrieved passages arrive as unlabeled blobs of text, no instruction can produce citations afterward. When you review a RAG design, ask where the source labels live. The answer should be "attached to every piece, from the moment the document is split".
 
@@ -85,9 +85,9 @@ One of RAG's strongest product properties is that knowledge updates are decouple
 
 Compare the paste-everything approach: a policy change is an edit to a giant instructions block, shipped through your change process, with the risk that someone accidentally alters the agent's behavioral rules while fixing a shipping fact.
 
-This has an organizational consequence worth planning for: with RAG, the people who own the content (support leads, policy writers, recruiters) can update what the agent knows without involving the people who own the product. That is a genuine operational win, but it means you need a lightweight process for who may publish into the knowledge base, because a wrong document now produces wrong answers at scale, instantly. The agent will believe whatever the index contains.
+This has an organizational consequence worth planning for: with RAG, the people who own the content (support leads, policy writers, exam tutors) can update what the agent knows without involving the people who own the product. That is a genuine operational win, but it means you need a lightweight process for who may publish into the knowledge base, because a wrong document now produces wrong answers at scale, instantly. The agent will believe whatever the index contains.
 
-For the recruiter companion, freshness matters differently: job posts open and close weekly, and hiring criteria shift mid-search. A RAG setup lets a recruiter update the criteria document and have the next CV evaluation use it, without an engineer in the loop. It also means a stale job post produces confidently stale evaluations, so the publishing process should include expiry or review dates for documents, not just upload.
+For the exam-prep coach, freshness matters differently: certification exam guides get retired and re-issued, and a mock test built from the old guide drills the learner on the wrong domains. A RAG setup lets a tutor upload the new exam guide and have the next mock test use it, without an engineer in the loop. It also means a stale guide produces confidently stale drills, so the publishing process should include expiry or review dates for documents, not just upload.
 
 ## When RAG beats a long prompt, and when to just paste
 

@@ -37,12 +37,14 @@ capability areas; part 8 is the one to reread before every launch.
 
 ## The running examples
 
-Two product examples recur across the series, chosen because one is generic and one is real:
+Two product examples recur across the series, chosen because one is generic and one is higher-stakes:
 
 - **A support copilot for an online store**: answers customer questions, looks up orders, processes
   returns. Generic enough to map onto your product.
-- **A recruiter companion**: evaluates CVs against a job post and runs mock interviews. Drawn from a
-  real product plan, and useful wherever the series needs a higher-stakes example.
+- **An exam-prep coach**: grades IELTS practice essays against the official band descriptors, builds
+  AWS certification mock tests from the current exam guide, and runs spoken mock speaking tests. Used
+  wherever the series needs a higher-stakes example: a learner's essays, recordings, and scores are
+  personal data, and a wrong readiness verdict costs a real exam fee.
 
 ## The one-sentence summary of the whole series
 

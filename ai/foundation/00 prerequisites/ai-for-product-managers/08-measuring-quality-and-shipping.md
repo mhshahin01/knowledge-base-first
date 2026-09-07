@@ -17,7 +17,7 @@ The product consequence: never approve a prompt change, a model swap, or a new f
 
 This is also the answer to a common PM frustration: the demo that worked yesterday fails in front of the VP today. Nothing broke. The model's output varies run to run, and the demo was never a measurement in the first place. The fix is not a better demo script; it is a number you can rerun.
 
-There is a second, quieter way demos lie: they demo the happy path by construction. Nobody demos the customer who types in all caps with three spelling mistakes, or the CV that is a scanned photo of a printed page. Those inputs never appear until real users arrive, which is why the measurement that replaces the demo has to be built from real language, not from the team's best behavior.
+There is a second, quieter way demos lie: they demo the happy path by construction. Nobody demos the customer who types in all caps with three spelling mistakes, or the handwritten essay uploaded as a blurry phone photo. Those inputs never appear until real users arrive, which is why the measurement that replaces the demo has to be built from real language, not from the team's best behavior.
 
 ## Evals at PM level
 
@@ -28,9 +28,9 @@ An **eval** (short for evaluation) is a fixed table of real inputs paired with t
 | Support copilot | "where is my order" (no order number given) | Ask for the order number; do not guess or invent a status |
 | Support copilot | "my package never came, I want my money back, this is fraud" | Acknowledge, verify the order, start the returns flow; never promise a refund amount before verification |
 | Support copilot | "track order abc 123" (lowercase, spaces) | Treat it the same as the clean format "ABC123" |
-| Recruiter companion | A CV with ten years of experience in an image-heavy file | Flag it as unparsable instead of inventing a score |
-| Recruiter companion | A strong CV against a job post it clearly does not match | Score the mismatch honestly; do not inflate the score because the CV is well written |
-| Recruiter companion | Candidate asks "what should I say to pass?" in a mock interview | Coach structure and preparation; never answer on the candidate's behalf |
+| Exam-prep coach | A handwritten essay uploaded as a blurry phone photo | Flag it as unreadable instead of inventing a band score |
+| Exam-prep coach | A polished, fluent essay that ignores the question asked | Score task response honestly; do not inflate the band because the prose is well written |
+| Exam-prep coach | Learner asks "just tell me the right answer" mid mock test | Coach the elimination method; never hand over the answer key |
 
 Notice two things about these rows. The inputs sound like real users, not like test engineers. And the expected behavior is about what the system does, not the exact words it says.
 
@@ -42,9 +42,9 @@ Three properties make evals useful to you:
 
 Two honest limits. First, model output is not deterministic, so a case passing four times out of five is a weak case, not a pass; the fix belongs in the design, not in re-rolling the dice. Second, evals cost real money: every row is a real model call, so 10 cases run 3 times is 30 billed calls (the counts here are illustrative, but the principle is from the source tutorials: keep the table small and pointed).
 
-As the product matures, the eval table grows up too. Early evals check single replies. Later ones check whole conversations: did the support copilot stay consistent across a ten-message return, did it call the right tools in the right order, did the recruiter companion's readiness score actually rise across interview rounds. Multi-turn cases are more expensive to write and to run, which is another reason the table stays pointed: a few conversations that represent your real usage beat a hundred synthetic ones.
+As the product matures, the eval table grows up too. Early evals check single replies. Later ones check whole conversations: did the support copilot stay consistent across a ten-message return, did it call the right tools in the right order, did the exam-prep coach's predicted band actually rise across mock-test rounds. Multi-turn cases are more expensive to write and to run, which is another reason the table stays pointed: a few conversations that represent your real usage beat a hundred synthetic ones.
 
-Also know what to measure. For the recruiter companion, do not assert on the exact wording of a CV report, because wording is the model's and varies run to run. Assert on the stable contract: did it identify the missing skill, did it produce a score within the expected band, did it refuse to invent experience that is not in the document.
+Also know what to measure. For the exam-prep coach, do not assert on the exact wording of an essay report, because wording is the model's and varies run to run. Assert on the stable contract: did it identify the weakest criterion, did it produce a score within the expected band range, did it refuse to credit vocabulary that is not in the essay.
 
 Finally, evals change how you think about releases. When the prompt is a program you measure, a prompt edit is a release, with the same discipline: versioned, tested against the suite, and reversible. If a change goes out and quality drops in production, the team should be able to roll back to last week's prompt as easily as rolling back any other code, with the eval scores to prove the rollback worked. If your team cannot tell you which version of the instructions is live right now, that is a gap worth closing before launch.
 
@@ -56,9 +56,9 @@ A real-life picture: the flight recorder. When a plane has an incident, investig
 
 A concrete trace story for the support copilot: a customer writes "cancel order 8812 and refund me," the agent answers "done," but no refund arrives. Without traces, this is a week of finger-pointing between the AI team and the payments team. With traces, the replay takes an hour: the model asked for the order, called the cancellation tool correctly, then composed a confident "done, refund issued" reply without ever calling the refund tool. The fix is an instruction plus an approval gate, and the case becomes two new eval rows: "cancel requests must call both tools" and "never claim a refund happened before the refund tool confirms."
 
-Traces also answer the money question. Because each step carries its token count, a failing conversation can be **priced**: this support conversation cost four cents, this one cost forty because the agent looped. (Figures illustrative.) Without traces, cost is a monthly bill and a shrug. With traces, cost is per feature, per conversation, per step, and therefore manageable. The same record explains latency: if the recruiter companion takes twenty seconds to score a CV, the trace shows whether the time went to the model thinking, a slow document parse, or a retry loop.
+Traces also answer the money question. Because each step carries its token count, a failing conversation can be **priced**: this support conversation cost four cents, this one cost forty because the agent looped. (Figures illustrative.) Without traces, cost is a monthly bill and a shrug. With traces, cost is per feature, per conversation, per step, and therefore manageable. The same record explains latency: if the exam-prep coach takes twenty seconds to grade an essay, the trace shows whether the time went to the model thinking, a slow document parse, or a retry loop.
 
-One practical note: traces may contain customer data, since they record what the customer actually wrote. Who on the team can read traces, and how long they are kept, is a privacy decision you should make deliberately, especially for the recruiter companion, where every trace contains a CV.
+One practical note: traces may contain customer data, since they record what the customer actually wrote. Who on the team can read traces, and how long they are kept, is a privacy decision you should make deliberately, especially for the exam-prep coach, where every trace contains a learner's essay or recording.
 
 As a PM, you do not configure tracing. You insist it exists, and you use it: when triaging a bug report, your first request is "send me the trace."
 
@@ -72,7 +72,7 @@ The engineering series ends its scale-out tutorial with a checklist where every 
 | Conversation memory strategy | A decided rule for what the agent remembers: how much history it keeps, when old turns get summarized or dropped | Conversations that get slower, pricier, and more confused the longer they run |
 | Conversation persistence | The conversation survives a crash or a server restart | A customer mid-return losing everything and starting over |
 | Guardrail layers | Checks on what goes in (abuse, personal data), what the agent decides, and what comes out | The agent repeating an insult, leaking another customer's data, or promising a refund it cannot give |
-| Approval gates on irreversible actions | A human confirms actions that cannot be undone: issuing a refund, deleting data, sending a final rejection to a candidate | An irreversible mistake executed at machine speed with no chance to catch it |
+| Approval gates on irreversible actions | A human confirms actions that cannot be undone: issuing a refund, deleting data, paying for a learner's exam slot | An irreversible mistake executed at machine speed with no chance to catch it |
 | Failure fallbacks | A ladder for when things break: retry, wait, switch to a backup model, and finally a graceful apology that hands off to a human | A blank screen or a hallucinated answer at the exact moment the service is degraded |
 | Knowledge freshness | A process for how the agent's documents (return policy, job descriptions) get updated, and how stale answers are detected | The agent confidently quoting last year's policy |
 | Security review | Someone has attacked your own agent on purpose: injection attempts, attempts to make it leak data or exceed its authority | Discovering your prompt-injection exposure from a screenshot on social media |
@@ -99,7 +99,7 @@ The checklist is the "what." The phasing is the "when." The pattern that works, 
 Three ordering rules sit underneath the table:
 
 1. **Pilot with friendly users first.** Internal staff or a small invited group who know they are testing and will report problems instead of churning. The goal of the pilot is not praise; it is a harvest of failures for the eval table.
-2. **Text before voice.** Voice multiplies every existing problem (latency becomes audible, errors cannot be re-read, turn-taking adds failure modes) without adding new capability the text version lacks. The recruiter companion ships mock interviews as text chat first, and adds voice only after the text version is stable with real users. Same for the support copilot: nail the chat widget before the phone line.
+2. **Text before voice.** Voice multiplies every existing problem (latency becomes audible, errors cannot be re-read, turn-taking adds failure modes) without adding new capability the text version lacks. The exam-prep coach ships essay grading and mock tests as text first, and adds the spoken speaking test only after the text version is stable with real users. Same for the support copilot: nail the chat widget before the phone line.
 3. **Narrow scope before broad.** One intent done excellently beats ten intents done shakily. Launch the support copilot handling order lookup and returns, and have it gracefully decline everything else. Each new scope gets its own eval rows before it gets users.
 
 Every phase ends with the same exit criteria: eval scores green, traces reviewed, cost per conversation measured, and at least a few real failures collected and understood.
@@ -112,7 +112,7 @@ And when a phase fails its exit criteria, the move is backward, not forward. A f
 
 Launch is where the real measurement begins.
 
-For the support copilot, the quality dashboard tracks eval score trend, escalation rate to human agents, and refund-conversation outcomes; the cost dashboard tracks cost per resolved conversation, split by intent, since a return costs more calls than an order lookup. For the recruiter companion, quality is score consistency on the eval table plus how often candidates challenge a recommendation, and cost is per CV evaluation and per mock-interview round, the same units the engineering series uses as its definition of done for a shipped product.
+For the support copilot, the quality dashboard tracks eval score trend, escalation rate to human agents, and refund-conversation outcomes; the cost dashboard tracks cost per resolved conversation, split by intent, since a return costs more calls than an order lookup. For the exam-prep coach, quality is band-score consistency on the eval table plus how far learners' real exam results land from the predicted band, and cost is per essay graded and per mock-test round, the same units the engineering series uses as its definition of done for a shipped product.
 
 - **Dashboards over vibes.** Two numbers matter weekly: quality (eval score trend, plus escalation and thumbs-down rates from production) and cost (per conversation, per feature, total). Both should be visible to you without asking anyone. A trend that drifts for three weeks is a finding; a single bad day is weather.
 - **Failure stories are assets.** Every production incident is a free test case discovered in the wild. The discipline is mechanical: the incident is replayed from its trace, the root cause is found, the fix ships, and a new row enters the regression suite so this exact failure can never silently return. A team with six months of this discipline has an immune system no amount of upfront prompt polishing could have produced. Keep the stories too: "the week the copilot promised refunds on digital goods" is worth more in a planning meeting than any slide about AI risk.
@@ -127,7 +127,7 @@ Eight parts, one job. Across everything from the first part's agent loop to this
 
 Your first 90 days on an agentic product, compressed:
 
-- **Days 1-30: learn to read the evidence.** Sit in on the team's traces and eval runs until both are familiar. Write the first eval table yourself with real customer language from support tickets or interview transcripts; the tricky rows are your contribution, because you know which misunderstandings actually cost you customers.
+- **Days 1-30: learn to read the evidence.** Sit in on the team's traces and eval runs until both are familiar. Write the first eval table yourself with real customer language from support tickets or coaching-session transcripts; the tricky rows are your contribution, because you know which misunderstandings actually cost you customers.
 - **Days 31-60: run the gate.** Walk the production-readiness checklist row by row and record the evidence, or the gap, for each. Agree the phasing plan: pilot cohort, text before voice, narrow scope. This is where you earn the launch date instead of negotiating it.
 - **Days 61-90: run the pilot and build the immune system.** Convert every failure into an eval row and every surprise into a checklist update. Set the two dashboards (quality and cost) you will personally look at every week after launch.
 
@@ -143,9 +143,9 @@ Each of these maps to a section above; if you get a confident answer to all eigh
 2. What was the eval score before and after the last prompt change? Does the suite run automatically on every change, and does a failing score block a release?
 3. When a customer reports a bad answer, can you send me the trace of that exact conversation? What does a trace show us, step by step?
 4. What is our stop condition if the agent gets stuck in a loop, and what is the spending cap per conversation?
-5. Which actions are irreversible (refunds, deletions, final candidate rejections), and where is the human approval gate on each?
+5. Which actions are irreversible (refunds, deletions, paid exam bookings), and where is the human approval gate on each?
 6. When the model provider has an outage mid-conversation, what does the user experience: retry, backup model, or a graceful apology with a human handoff?
-7. How do the agent's knowledge documents (return policy, job posts) get updated, and how would we notice the agent quoting a stale one?
+7. How do the agent's knowledge documents (return policy, exam guides) get updated, and how would we notice the agent quoting a stale one?
 8. What is our cost per conversation today, per feature, and at what number does an alert fire?
 
 ## Key terms

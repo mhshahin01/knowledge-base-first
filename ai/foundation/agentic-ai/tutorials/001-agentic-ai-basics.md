@@ -471,7 +471,7 @@ Concretely, the context of a typical agent call contains five things:
 
 | # | Context ingredient | Example |
 |---|---|---|
-| 1 | System prompt | "You are a CV-reviewing assistant. Be honest, be specific…" |
+| 1 | System prompt | "You are an IELTS essay-grading assistant. Be honest, be specific…" |
 | 2 | Tool menu | Names, descriptions, and input schemas of every available tool |
 | 3 | Conversation / task history | The user's goal and every message so far |
 | 4 | Tool results | Everything the OBSERVE step appended (Section 3) |
@@ -533,7 +533,7 @@ The mental model: **the context window is RAM; context engineering is virtual me
 
 ## 8. Tokens and cost estimation
 
-**Objective:** Know what a token actually is, estimate input and output tokens *before* running anything, and produce a defensible cost forecast for an agent product — worked end-to-end on a CV-reviewing agent.
+**Objective:** Know what a token actually is, estimate input and output tokens *before* running anything, and produce a defensible cost forecast for an agent product — worked end-to-end on an essay-grading agent.
 
 ### What a token is
 
@@ -541,7 +541,7 @@ Models do not read characters or words; they read **tokens**: chunks of text dra
 
 - 1 token ≈ 4 characters ≈ ¾ of a word
 - 100 tokens ≈ 75 words ≈ a solid paragraph
-- 1 page of text ≈ 500–700 tokens; a 2-page CV ≈ 1,200–2,000 tokens
+- 1 page of text ≈ 500–700 tokens; a 250-word IELTS essay ≈ 350–450 tokens
 
 ```text
 "unbelievable"   → ["un", "believ", "able"]        3 tokens
@@ -579,22 +579,22 @@ Estimate *before* you build, in four steps:
 
 1. **Fixed overhead (measure once):** system prompt + tool schemas + standing instructions, pasted into a tokenizer. Typically 500–3,000 tokens for a lean agent; heavy harnesses such as full coding agents run 10K+.
 2. **Per-round growth:** how much does each loop iteration append? Tool results dominate: a fetched web page can be 5K–50K tokens; a database row, 100. Estimate a typical tool result and multiply by the expected number of rounds.
-3. **Out-tokens:** decide the *shape* of the answer. A classification label: ~10 tokens. A structured CV review: 400–800. A long report: 2,000+. Then set a `max_tokens` cap — it is both a quality guardrail and a cost ceiling. (Reasoning models add hidden thinking tokens, sometimes thousands per call; budget for them separately.)
+3. **Out-tokens:** decide the *shape* of the answer. A classification label: ~10 tokens. A structured essay report: 400–800. A long report: 2,000+. Then set a `max_tokens` cap — it is both a quality guardrail and a cost ceiling. (Reasoning models add hidden thinking tokens, sometimes thousands per call; budget for them separately.)
 4. **Multiply by volume:** calls per task × tasks per day × 30 days. Then **add a 25–30% buffer** for retries, failed loops, and users who paste novels instead of paragraphs.
 
-### Worked example: forecasting a CV-reviewer agent
+### Worked example: forecasting an essay-grader agent
 
-**The product:** recruiters upload a CV; the agent reads it, checks it against a rubric (one parsing tool, one review pass), and returns a structured review: strengths, gaps, score, recommendation. Assume a mid-tier model at **$1.25 per 1M input tokens / $10 per 1M output tokens** (illustrative; always check your provider's current price sheet).
+**The product:** learners upload an IELTS practice essay; the agent reads it, fetches the band descriptors for the task type (one lookup tool, one grading pass), and returns a structured report: a score per criterion, the descriptor line behind each score, concrete fixes, and a predicted band. Assume a mid-tier model at **$1.25 per 1M input tokens / $10 per 1M output tokens** (illustrative; always check your provider's current price sheet).
 
-**Step 1 — the token budget per review:**
+**Step 1 — the token budget per essay:**
 
 | Component | Tokens |
 |---|---|
-| Round 1 input: system prompt + rubric + tool schemas (1,500) + the 2-page CV (1,500) | 3,000 |
+| Round 1 input: system prompt + scoring instructions + tool schemas (2,600) + the 250-word essay (400) | 3,000 |
 | Round 1 output: a tool call | 100 |
-| Round 2 input: round 1's 3,000 re-sent + tool call (100) + parser result (800) | 3,900 |
-| Round 2 output: the structured review | 600 |
-| **Billed totals per review** | **6,900 in / 700 out** |
+| Round 2 input: round 1's 3,000 re-sent + tool call (100) + the descriptor passages returned (800) | 3,900 |
+| Round 2 output: the structured report | 600 |
+| **Billed totals per essay** | **6,900 in / 700 out** |
 
 Notice the input is 6,900, not the 3,900 of unique content: round 2 re-sends everything round 1 saw, plus what round 1 produced. That is the loop arithmetic from the table above, applied to a real product.
 
@@ -603,22 +603,22 @@ Notice the input is 6,900, not the 3,900 of unique content: round 2 re-sends eve
 ```text
 Input:   6,900 / 1,000,000 × $1.25 = $0.0086
 Output:    700 / 1,000,000 × $10   = $0.0070
-Cost per CV review                 ≈ $0.016   (about 1.6 cents)
+Cost per essay graded              ≈ $0.016   (about 1.6 cents)
 ```
 
 **Step 3 — the forecast:**
 
 | Volume | Monthly cost (with +30% buffer) |
 |---|---|
-| 100 CVs/day (≈3,000/month) | ≈ $61 |
-| 1,000 CVs/day | ≈ $610 |
-| 10,000 CVs/day | ≈ $6,100 |
+| 100 essays/day (≈3,000/month) | ≈ $61 |
+| 1,000 essays/day | ≈ $610 |
+| 10,000 essays/day | ≈ $6,100 |
 
-**Step 4 — per-*conversation* costing (the harder case):** if the recruiter can chat with the agent afterwards ("why did you score leadership low?"), every follow-up turn re-sends the *entire conversation so far*. A 10-turn conversation costs roughly 5–10× the first turn, because in-tokens accumulate with each exchange. Forecast conversations as *(turn-1 cost) + the sum of growing re-send costs* — or, more practically, measure real conversations for a week and use the observed average.
+**Step 4 — per-*conversation* costing (the harder case):** if the learner can chat with the agent afterwards ("why did you score coherence at 6?"), every follow-up turn re-sends the *entire conversation so far*. A 10-turn conversation costs roughly 5–10× the first turn, because in-tokens accumulate with each exchange. Forecast conversations as *(turn-1 cost) + the sum of growing re-send costs* — or, more practically, measure real conversations for a week and use the observed average.
 
-**The levers, if the number is too big:** cache the system prompt and rubric (~90% off the fixed overhead on every call), use a cheap model for the parsing step and reserve the strong model for judgment, cap output length, and compact conversations instead of letting them grow unbounded. A realistic mixed setup often lands 3–10× cheaper than the naive single-flagship-model estimate.
+**The levers, if the number is too big:** cache the system prompt and scoring instructions (~90% off the fixed overhead on every call), use a cheap model for mechanical steps (extracting text from a photographed essay, word counts) and reserve the strong model for the grading judgment, cap output length, and compact conversations instead of letting them grow unbounded. A realistic mixed setup often lands 3–10× cheaper than the naive single-flagship-model estimate.
 
-**Self-check:** Your CV agent's fixed overhead is 2,000 tokens, and each of its 4 rounds appends ~1,000 tokens of tool results. Roughly how many in-tokens does one review cost? (2,000 + 3,000 + 4,000 + 5,000 = 14,000 — every round re-sends everything before it.)
+**Self-check:** Your essay-grader's fixed overhead is 2,000 tokens, and each of its 4 rounds appends ~1,000 tokens of tool results. Roughly how many in-tokens does one essay cost? (2,000 + 3,000 + 4,000 + 5,000 = 14,000 — every round re-sends everything before it.)
 
 ---
 
