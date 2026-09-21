@@ -751,7 +751,7 @@ the business case in one line. Re-read Section 7.
 
 ## 16. Advanced topics and learning path
 
-**Recommended learning order:** Part 4 of this series (OAuth 2.0, `004-oauth-2.md`) to Part 5
+**Recommended learning order:** Part 4 of this series (OAuth 2.0, `004-oauth-2-part-1.md`) to Part 5
 (OIDC, `005-openid-connect-oidc.md`) to Part 6 (real sign-up and login flows with Keycloak,
 `006-signup-login-flows-end-to-end.md`). Mechanism before assembly: you now know the goal (SSO) and
 the artifact (tokens, Part 2); next you learn the protocol that issues and moves the artifact, then

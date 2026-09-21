@@ -1,5 +1,5 @@
 # Canonical local IdP workbench for the IAM tutorial series (PLAN-iam-tutorial-series.md, Section 5.2).
-# First used in Part 4 (004-oauth-2.md); later parts reuse it with their own realm export.
+# First used in Part 4 (004-oauth-2-part-1.md); later parts reuse it with their own realm export.
 services:
   postgres:
     image: postgres:17
